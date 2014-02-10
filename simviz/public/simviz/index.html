@@ -1,0 +1,1346 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" />
+    <!-- gebo blue theme-->
+    <link rel="stylesheet" href="css/blue.css" id="link_theme" />
+    <!-- breadcrumbs-->
+    <link rel="stylesheet" href="lib/jBreadcrumbs/css/BreadCrumb.css" />
+    <!-- tooltips-->
+    <link rel="stylesheet" href="lib/qtip2/jquery.qtip.min.css" />
+    <!-- colorbox -->
+    <link rel="stylesheet" href="lib/colorbox/colorbox.css" />    
+    <!-- code prettify -->
+    <link rel="stylesheet" href="lib/google-code-prettify/prettify.css" />    
+    <!-- notifications -->
+    <link rel="stylesheet" href="lib/sticky/sticky.css" />    
+    <!-- splashy icons -->
+    <link rel="stylesheet" href="images/splashy/splashy.css" />
+    <!-- flags -->
+    <link rel="stylesheet" href="images/flags/flags.css" />	
+    <!-- calendar -->
+    <link rel="stylesheet" href="lib/fullcalendar/fullcalendar_gebo.css" />
+
+    <!-- main styles -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans" />
+    <style>
+      body {
+        /*padding-top: 60px;  60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+
+    <link href="css/nv.d3.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+
+    <link rel="shortcut icon" href="../favicon.png">
+
+    <style>
+
+      body {
+        overflow-y:scroll;
+      }
+
+      text {
+        font: 12px sans-serif;
+      }
+
+      svg {
+        display: block;
+      }
+
+      #chart1 svg {
+        height: 500px;
+        min-width: 100px;
+        min-height: 100px;
+        /*
+          margin: 50px;
+          Minimum height and width is a good idea to prevent negative SVG dimensions...
+          For example width should be =< margin.left + margin.right + 1,
+          of course 1 pixel for the entire chart would not be very useful, BUT should not have errors
+        */
+      }
+
+    </style>
+
+    <script>
+      window.location = "/simviz/dashboard.html";
+    </script>
+
+  </head>
+
+  <body>
+
+    <div class="style_switcher">
+      <div class="sepH_c">
+        <p>Colors:</p>
+        <div class="clearfix">
+          <a href="javascript:void(0)" class="style_item jQclr blue_theme style_active" title="blue">blue</a>
+          <a href="javascript:void(0)" class="style_item jQclr dark_theme" title="dark">dark</a>
+          <a href="javascript:void(0)" class="style_item jQclr green_theme" title="green">green</a>
+          <a href="javascript:void(0)" class="style_item jQclr brown_theme" title="brown">brown</a>
+          <a href="javascript:void(0)" class="style_item jQclr eastern_blue_theme" title="eastern_blue">eastern blue</a>
+          <a href="javascript:void(0)" class="style_item jQclr tamarillo_theme" title="tamarillo">tamarillo</a>
+        </div>
+      </div>
+      <div class="sepH_c">
+        <p>Backgrounds:</p>
+        <div class="clearfix">
+          <span class="style_item jQptrn style_active ptrn_def" title=""></span>
+          <span class="ssw_ptrn_a style_item jQptrn" title="ptrn_a"></span>
+          <span class="ssw_ptrn_b style_item jQptrn" title="ptrn_b"></span>
+          <span class="ssw_ptrn_c style_item jQptrn" title="ptrn_c"></span>
+          <span class="ssw_ptrn_d style_item jQptrn" title="ptrn_d"></span>
+          <span class="ssw_ptrn_e style_item jQptrn" title="ptrn_e"></span>
+        </div>
+      </div>
+      <div class="sepH_c">
+        <p>Layout:</p>
+        <div class="clearfix">
+          <label class="radio inline"><input type="radio" name="ssw_layout" id="ssw_layout_fluid" value="" checked /> Fluid</label>
+          <label class="radio inline"><input type="radio" name="ssw_layout" id="ssw_layout_fixed" value="gebo-fixed" /> Fixed</label>
+        </div>
+      </div>
+      <div class="sepH_c">
+        <p>Sidebar position:</p>
+        <div class="clearfix">
+          <label class="radio inline"><input type="radio" name="ssw_sidebar" id="ssw_sidebar_left" value="" checked /> Left</label>
+          <label class="radio inline"><input type="radio" name="ssw_sidebar" id="ssw_sidebar_right" value="sidebar_right" /> Right</label>
+        </div>
+      </div>
+      <div class="sepH_c">
+        <p>Show top menu on:</p>
+        <div class="clearfix">
+          <label class="radio inline"><input type="radio" name="ssw_menu" id="ssw_menu_click" value="" checked /> Click</label>
+          <label class="radio inline"><input type="radio" name="ssw_menu" id="ssw_menu_hover" value="menu_hover" /> Hover</label>
+        </div>
+      </div>
+
+      <div class="gh_button-group">
+        <a href="#" id="showCss" class="btn btn-primary btn-mini">Show CSS</a>
+        <a href="#" id="resetDefault" class="btn btn-mini">Reset</a>
+      </div>
+      <div class="hide">
+        <ul id="ssw_styles">
+          <li class="small ssw_mbColor sepH_a" style="display:none">body {<span class="ssw_mColor sepH_a" style="display:none"> color: #<span></span>;</span> <span class="ssw_bColor" style="display:none">background-color: #<span></span> </span>}</li>
+          <li class="small ssw_lColor sepH_a" style="display:none">a { color: #<span></span> }</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="maincontainer" class="clearfix">
+      <!-- header -->
+      <header>
+        <div class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container-fluid">
+              <a class="brand" href="dashboard.html"><i class="icon-home icon-white"></i> SimViz 2</a>
+              <ul class="nav user_menu pull-right">
+                <li class="hidden-phone hidden-tablet">
+                  <div class="nb_boxes clearfix">
+                    <a data-toggle="modal" data-backdrop="static" href="#myMail" class="label ttip_b" title="New messages">25 <i class="splashy-mail_light"></i></a>
+                    <a data-toggle="modal" data-backdrop="static" href="#myTasks" class="label ttip_b" title="New tasks">10 <i class="splashy-calendar_week"></i></a>
+                  </div>
+                </li>
+                <!--                <li class="divider-vertical hidden-phone hidden-tablet"></li>
+                                <li class="dropdown">
+                                  <a href="#" class="dropdown-toggle nav_condensed" data-toggle="dropdown"><i class="flag-gb"></i> <b class="caret"></b></a>
+                                  <ul class="dropdown-menu">
+                                    <li><a href="javascript:void(0)"><i class="flag-de"></i> Deutsch</a></li>
+                                    <li><a href="javascript:void(0)"><i class="flag-fr"></i> Français</a></li>
+                                    <li><a href="javascript:void(0)"><i class="flag-es"></i> Español</a></li>
+                                    <li><a href="javascript:void(0)"><i class="flag-ru"></i> Pусский</a></li>
+                                  </ul>
+                                </li>-->
+                <li class="divider-vertical hidden-phone hidden-tablet"></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="user_profile.html">My Plots</a></li>
+                    <li><a href="javascrip:void(0)">Another action</a></li>
+                    <li class="divider"></li>
+                    <li><a href="login.html">Log Out</a></li>
+                  </ul>
+                </li>
+              </ul>
+              <a data-target=".nav-collapse" data-toggle="collapse" class="btn_menu">
+                <span class="icon-align-justify icon-white"></span>
+              </a>
+              <nav>
+                <div class="nav-collapse">
+                  <ul class="nav">
+                    <li class="dropdown">
+                      <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-list-alt icon-white"></i> Pages <b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="dashboard.html?page=tb">Test Benches</a></li>
+                        <li><a href="dashboard.html?page=conf">Configurations</a></li>
+                        <li><a href="dashboard.html?page=sim">Simulations</a></li>
+                        <li><a href="dashboard.html?page=sim&tbID=31&confID=34">Sample Simulation List</a></li>
+                        <li><a href="plot.html?plotID=37">Sample Plot Page</a></li>
+                      </ul>
+                    </li>
+
+                  </ul>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+      </header>
+
+      <!-- main content -->
+      <div id="contentwrapper">
+        <div class="main_content">
+          <!-- ko if: plot() != undefined -->
+          <h1 class="heading"><span data-bind="text: plot().plot_settings().Name"></span></h1>
+          <!-- /ko -->
+          <div id="chart" style="">
+            <svg style="height: 500px;"></svg>
+          </div>
+
+          <ul class="nav nav-tabs">
+            <li data-bind="click: refreshStaticChart1"><a href="#dt1" data-toggle="tab" class="active">MSD Static from File</a></li>
+            <li data-bind="click: refreshMSD1"><a href="#msd" data-toggle="tab">MSD From DB</a></li>
+            <li data-bind="click: refreshMSD2"><a href="#msd2" data-toggle="tab">MSD2 From DB</a></li>
+            <li data-bind="click: initializeD3ScatterPlotChart"><a href="#Scatter" data-toggle="tab">Scatter plot</a></li>
+            <li data-bind="click: initializeD3BarChart"><a href="#Scatter" data-toggle="tab">Bar plot</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="dt1" style="">
+              <div class="row-fluid">
+                <div class="span12">
+
+
+                  <!-- ko if: csvExportReady()  -->
+                  <h4 style="margin-top:10px; margin-bottom: 7px;">Your Export is Ready</h4>
+                  <a class="btn btn-success" data-bind="attr:{href: varDownloadLink}">Vars Export</a>
+                  <a class="btn btn-warning" data-bind="attr:{href: paramDownloadLink}">Param Export</a>
+                  <!-- /ko -->
+
+                  <div id="extremeLow" style="display:none;">0</div>
+                  <div id="extremeHigh" style="display:none;">1000</div>
+                  <button id="zoomSend" style="display:none;"></button>
+                </div>
+              </div>
+
+              <div class="row-fluid">
+                <div class="span8">
+                  <h3>Graph Series</h3>
+                  <a class="btn btn-success" id="openAddVariableDialog" href="#AddVariableDialog" data-toggle="modal" data-backdrop="false">Add Variables</a>
+                  <a class="btn btn-danger" id="ClearVariable" href="#_" >Clear Variables</a>
+                  <div class="">
+                    <form action="">
+                      <ul id="yaxislist" class="unstyled" data-bind="foreach: variables">
+                        <!--          <li>Add Some Variables to Begin</li>-->
+                        <li>
+                          <label data-bind="attr: {for: 'y'+variable_id()}" class="checkbox">
+                            <input type="checkbox" data-bind="click: $parent.clickYAxisVariable, attr: { id: 'y'+variable_id() }" />
+                            <span data-bind=" text: name"></span>
+                          </label>
+                        </li>
+                      </ul>
+                    </form>
+                  </div>
+                  <div class="" style="display: none;">
+                    <div class="whead"><h6>X-Axis</h6></div>
+                    <div class="body">
+                      <ul>
+                        <li>
+                          <input type="radio" name="xaxisoption" id="xTime" value="" class="xaxisvar" checked />
+                          <label for="xTime" class="eltLabel">Time</label>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="span4" style="display: none;">
+                  <h3>Plotting History</h3>
+                  <div id="dyna" class="hiddenpars">
+                    <a class="tOptions" title="Options"><img src="img/icons/options" alt="" /></a>
+                    <table cellpadding="0" cellspacing="0" border="0" class="vTable" id="dynamicVTable">
+                      <thead>
+                        <tr>
+                          <th>Version</th>
+                          <th>Created<span class="sorting" style="display: block;"></span></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!--Data-->
+                <div id="pointRatio" style="display:none;">25</div>
+                <div id="treeSelectedDataLink" style="display:inline;"></div>
+                <div id="treeSelectedName" style="display:inline;"></div>
+
+              </div>
+
+
+
+
+            </div>
+            <div class="tab-pane" id="dt2">
+              <div id="chart1">
+                <svg style="height: 500px;"></svg>
+              </div>
+            </div>
+            <div class="tab-pane active" id="msd">
+
+            </div>
+            <div class="tab-pane" id="msd2">
+              <div id="chart2">
+                <svg style="height: 500px;"></svg>
+              </div>
+            </div>
+            <div class="tab-pane" id="msd2">
+              <div id="chart3">
+                <svg style="height: 500px;"></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal hide fade" id="AddVariableDialog">
+            <div class="modal-header">
+              <button class="close" data-dismiss="modal">×</button>
+              <h3>Search for and Add Variables</h3>
+            </div>
+            <div class="modal-body">
+              <div class="row-fluid">
+                <div class="span12">
+                  <div class="searchLine" style="margin-top:0px;">
+                    <form action="">
+                      <button type="submit" name="find" id="find" value="" data-bind="click: findClick"><span class="icos-search"></span></button>
+                      <input type="text" name="search" id="variableSerach" class="" placeholder="Enter search text..." />
+                    </form>
+                  </div>
+                  <img id="barLoader" src="img/bar_loader.gif" style="display:none;"/>
+                  <div id="searchResults" style="margin: 3px 0px 3px 3px;" class="scrollpane" data-bind="foreach: searchVariables">
+
+                    <div class="row-fluid varbox" style="margin:5px 5px 5px 0px; padding:0 0px 0 5px; border-bottom:1px #ccc solid;" 
+                         data-bind="attr: { id: variable_id, name: name, shortname: short_name, data_link: data_link, var_type: type }, click: $parent.varBoxClick" >
+                      <div class="span12" style="font-size: 11px;" data-bind="text: name"><div class="clear"></div></div></div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a href="javascript:void(0)" class="btn">Done</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- sidebar -->
+      <a href="javascript:void(0)" class="sidebar_switch on_switch ttip_r" title="Hide Sidebar">Sidebar switch</a>
+      <div class="sidebar">
+
+        <div class="antiScroll">
+          <div class="antiscroll-inner">
+            <div class="antiscroll-content">
+
+              <div class="sidebar_inner">
+                <form action="index.php?uid=1&amp;page=search_page" class="input-append" method="post" >
+                  <input autocomplete="off" name="query" class="search_query input-medium" size="16" type="text" placeholder="Search..." /><button type="submit" class="btn"><i class="icon-search"></i></button>
+                </form>
+                <div id="side_accordion" class="accordion">
+
+                  <div class="accordion-group">
+                    <div class="accordion-heading">
+                      <a href="#collapseOne" data-parent="#side_accordion" data-toggle="collapse" class="accordion-toggle">
+                        <i class="icon-folder-close"></i> Content
+                      </a>
+                    </div>
+                    <div class="accordion-body collapse" id="collapseOne">
+                      <div class="accordion-inner">
+                        <ul class="nav nav-list">
+                          <li><a href="javascript:void(0)">Articles</a></li>
+                          <li><a href="javascript:void(0)">News</a></li>
+                          <li><a href="javascript:void(0)">Newsletters</a></li>
+                          <li><a href="javascript:void(0)">Comments</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="push"></div>
+              </div>
+
+              <div class="sidebar_info">
+                <ul class="unstyled">
+                  <li>
+                    <span class="act act-warning">65</span>
+                    <strong>New comments</strong>
+                  </li>
+
+                </ul>
+              </div> 
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Le javascript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+      <script type="text/javascript" src="js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="js/d3.v2.js"></script>
+      <script type="text/javascript" src="js/nv.d3.min.js"></script>
+      <script type="text/javascript" src="js/highcharts.js"></script>
+      <script type="text/javascript" src="js/modules/exporting.src.js"></script>
+      <script type="text/javascript" src="js/knockout-2.1.0.js"></script>
+      <script type="text/javascript" src="js/knockout-classes.js"></script>
+      <script type="text/javascript" src="js/jquery.datatables.min.js"></script>
+      <script type="text/javascript" src="lib/querystring/source/querystring-0.9.0-min.js"></script>
+
+
+      <!-- smart resize event -->
+      <script src="js/jquery.debouncedresize.min.js"></script>
+      <!-- hidden elements width/height -->
+      <script src="js/jquery.actual.min.js"></script>
+      <!-- js cookie plugin -->
+      <script src="js/jquery.cookie.min.js"></script>
+      <!-- tooltips -->
+      <script src="lib/qtip2/jquery.qtip.min.js"></script>
+      <!-- jBreadcrumbs -->
+      <script src="lib/jBreadcrumbs/js/jquery.jBreadCrumb.1.1.min.js"></script>
+      <!-- lightbox -->
+      <script src="lib/colorbox/jquery.colorbox.min.js"></script>
+      <!-- fix for ios orientation change -->
+      <script src="js/ios-orientationchange-fix.js"></script>
+      <!-- scrollbar -->
+      <script src="lib/antiscroll/antiscroll.js"></script>
+      <script src="lib/antiscroll/jquery-mousewheel.js"></script>
+      <!-- to top -->
+      <script src="lib/UItoTop/jquery.ui.totop.min.js"></script>
+      <!-- common functions -->
+      <script src="js/gebo_common.js"></script>
+
+      <script src="lib/jquery-ui/jquery-ui-1.8.20.custom.min.js"></script>
+      <!-- touch events for jquery ui-->
+      <script src="js/forms/jquery.ui.touch-punch.min.js"></script>
+      <!-- multi-column layout -->
+      <script src="js/jquery.imagesloaded.min.js"></script>
+      <script src="js/jquery.wookmark.js"></script>
+      <!-- responsive table -->
+      <script src="js/jquery.mediaTable.min.js"></script>
+      <!-- small charts -->
+      <script src="js/jquery.peity.min.js"></script>
+      <!-- charts -->
+      <script src="lib/flot/jquery.flot.min.js"></script>
+      <script src="lib/flot/jquery.flot.resize.min.js"></script>
+      <script src="lib/flot/jquery.flot.pie.min.js"></script>
+      <!-- calendar -->
+      <!--<script src="lib/fullcalendar/fullcalendar.min.js"></script>-->
+      <!-- sortable/filterable list -->
+      <script src="lib/list_js/list.min.js"></script>
+      <script src="lib/list_js/plugins/paging/list.paging.min.js"></script>
+      <!-- dashboard functions -->
+      <!--      <script src="js/gebo_dashboard.js"></script>-->
+
+
+
+
+      <script type="text/javascript">
+
+      //var chart; // global
+      var receiver = 0;
+      var checked = 0;
+
+      $(document).ready(function() {
+        $.ajaxSetup({cache: false});
+
+        function PlotViewModel() {
+          // Data
+          var self = this;
+
+          //View Model Variables
+          self.chart = ko.observable();
+          self.chart2 = ko.observable();
+          self.plot = ko.observable();
+
+          self.timeSeriesVar = ko.observable();
+          self.variables = ko.observableArray();
+          self.searchVariables = ko.observableArray();
+          self.checkedVariables = ko.observableArray();
+          self.varDownloadLink = ko.observable();
+          self.paramDownloadLink = ko.observable();
+          self.csvExportReady = ko.observable(false);
+          self.graphItems = ko.observableArray([]);
+
+          self.includeFilePath = "/simviz/";
+
+          self.initPlot = function(plotID) {
+            var post_data = {
+              plotID: plotID
+            };
+
+            //            $.post("/simviz_rest/getPlotJSON", post_data, function(result) {
+            //              var json = $.parseJSON(result);
+            //              self.plot(new Plot(json));
+            //
+            //              console.log(self.plot().plot_id());
+            //
+            //              self.initTime();
+            //              self.initializeChart();
+            //              self.initChartSettings();
+            //            });
+            //            
+            $.post("/simviz_rest/getPlotInfoFromDB/" + plotID, {}, function(result) {
+              //var json = $.parseJSON(result);
+              self.plot(new Plot(result.settings));
+              self.graphItems = ko.observableArray([]);
+
+              console.log(self.plot().plot_settings());
+
+              self.initializeD3Chart();
+              self.initChartSettings();
+            });
+          };
+
+          self.initStaticPlot = function() {
+
+            $.post("/simviz_rest/getPlotJson/", {}, function(result) {
+              //var json = $.parseJSON(result);
+              self.plot(new Plot(result.settings));
+              self.graphItems = ko.observableArray([]);
+
+              console.log(self.plot().plot_settings());
+
+              self.initializeD3Chart();
+              self.initChartSettings();
+            });
+          };
+
+          self.initTime = function() {
+            var plotID = 1;
+
+            var post_data = {
+              plotID: plotID
+            };
+
+            $.post("/simviz_rest/getTimeSeries/", post_data, function(result) {
+              console.log(result)
+              //var json = $.parseJSON(result);
+              self.timeSeriesVar(new Variable(result.time));
+
+              console.log(self.timeSeriesVar().variable_id());
+
+              //Do Dummy Variables
+              var var1 = {
+                variable_id: 51006,
+                name: "MassSpringDamper.Damper__Damper_10.Damper_mo.lossPower",
+                short_name: "lossPower",
+                data_link: "var_0.json",
+                plot_id: 1,
+                type: "var"
+              };
+              //
+              //              var var2 = {
+              //                variable_id: 51002,
+              //                name: "MassSpringDamper.Damper__Damper_10.Damper_mo.flange_a.f",
+              //                short_name: "f",
+              //                data_link: "var_0.json",
+              //                plot_id: 1,
+              //                type: "var"
+              //              };
+              //
+              //              var var3 = {
+              //                variable_id: 51002,
+              //                name: "MassSpringDamper.Damper__Damper_10.Damper_mo.v_rel",
+              //                short_name: "f",
+              //                data_link: "var_0.json",
+              //                plot_id: 1,
+              //                type: "var"
+              //              };
+
+              $.each(self.plot().plot_settings().series, function(i, obj) {
+                console.log(obj);
+                self.doD3ChartYDraw(new Variable(obj));
+              });
+
+              self.doD3ChartYDraw(new Variable(var1));
+              //              self.doD3ChartYDraw(new Variable(var2));
+              //              self.doD3ChartYDraw(new Variable(var3));
+
+            });
+          };
+          self.initializeD3Chart = function() {
+            nv.addGraph(function() {
+
+              var chart = nv.models.lineChart();
+              chart.xAxis
+                      .axisLabel('Time (ms)')
+                      .tickFormat(d3.format(',r'));
+
+              chart.yAxis
+                      .axisLabel('')
+                      .tickFormat(d3.format('.02f'));
+
+              d3.select('#chart svg')
+                      .datum(self.graphItems())
+                      .transition().duration(500)
+                      .call(chart);
+
+              nv.utils.windowResize(function() {
+                d3.select('#chart svg').call(chart);
+              });
+
+              self.chart(chart);
+
+              return chart;
+            });
+
+            self.initTime();
+          };
+
+          self.initializeD3ScatterPlotChart = function() {
+            nv.addGraph(function() {
+
+              var chart = nv.models.scatterChart()
+                      .showDistX(true)
+                      .showDistY(true)
+                      .color(d3.scale.category10().range());
+
+              //              chart.xAxis
+              //                      .axisLabel('Time (ms)')
+              //                      .tickFormat(d3.format(',r'));
+              //
+              //              chart.yAxis
+              //                      .axisLabel('')
+              //                      .tickFormat(d3.format('.02f'));
+
+              chart.xAxis.axisLabel('Time (ms)').tickFormat(d3.format('.02f'));
+              chart.yAxis.tickFormat(d3.format('.02f'));
+
+              d3.select('#chart svg')
+                      .datum(self.graphItems())
+                      .transition().duration(500)
+                      .call(chart);
+
+              nv.utils.windowResize(function() {
+                d3.select('#chart svg').call(chart);
+              });
+
+              self.chart(chart);
+
+              return chart;
+            });
+
+            self.initTime();
+          };
+          self.initializeD3BarChart = function() {
+            nv.addGraph(function() {
+
+
+              var width = nv.utils.windowSize().width - 40,
+                      height = nv.utils.windowSize().height - 40;
+
+              var chart = nv.models.multiBar()
+                      .width(width)
+                      .height(height)
+                      .stacked(true)
+
+              d3.select('#chart svg')
+                      .datum(testData())
+                      .transition().duration(500)
+                      .call(chart);
+
+              nv.utils.windowResize(function() {
+                d3.select('#chart svg').call(chart);
+              });
+
+              self.chart(chart);
+
+              return chart;
+            });
+
+            self.initTime();
+          };
+
+          self.doD3ChartYDraw = function(yvar) {
+            var settings = self.plot().plot_settings();
+            var name = yvar.name();
+            var seriesShortName = yvar.name();
+            var id = yvar.variable_id();
+
+            var data_link = "";
+
+            //get time
+            var time_data_link = self.includeFilePath + settings.data_folder + self.timeSeriesVar().data_link();
+            console.log(time_data_link);
+
+            var time = new Array();
+
+            $.getJSON(time_data_link, function(json) {
+              $.each(json, function(i, obj) {
+
+                if (obj.name == "time")
+                {
+                  data_link = self.includeFilePath + settings.data_folder + obj.data_link;
+                  $.getJSON(data_link, function(ts_json) {
+                    $.each(ts_json[obj.index], function(j, obj2) {
+                      time.push(obj2);
+                    });
+//                      console.log(time);
+
+                    //Once we have time, do awesome things
+                    if (yvar.data_link().indexOf("var") > -1)
+                    {
+                      console.log("var");
+                      var var_data_link = self.includeFilePath + settings.data_folder + yvar.data_link();
+                      console.log(var_data_link);
+                      $.getJSON(var_data_link, function(json) {
+                        console.log(name);
+
+                        $.each(json, function(i, varObj) {
+                          if (varObj.name == name)
+                          {
+                            console.log(varObj.name);
+                            data_link = self.includeFilePath + settings.data_folder + varObj.data_link;
+
+                            $.getJSON(data_link, function(json) {
+                              console.log("getJson");
+
+                              var line = [];
+
+                              $.each(json[varObj.index], function(j, obj2) {
+                                line.push({x: time[j], y: obj2});
+                              });
+
+                              self.graphItems.push({
+                                values: line,
+                                key: name,
+                                color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+                              });
+
+                              d3.select('#chart svg')
+                                      .datum(self.graphItems())
+                                      .transition().duration(500)
+                                      .call(self.chart());
+                              //
+                              //                              series.name = seriesShortName;
+                              //                              self.chart().xAxis[0].setCategories(categories);
+                              //                              self.chart().addSeries(series);
+                              //                              console.log("Series Added to Chart object");
+                              //                              self.chart().redraw();
+                            })
+                                    .error(function(request, err) {
+                              console.log('error');
+                              console.log(err);
+                            });
+
+                            return false;
+                          }
+                        });
+                      });
+                    }
+                    else if (yvar.data_link().indexOf("param") > -1)
+                    {
+                      console.log("param");
+                      var var_data_link = self.includeFilePath + settings.data_folder + '/' + yvar.data_link();
+                      //console.log(var_data_link);
+                      $.getJSON(var_data_link, function(json) {
+
+                        console.log(name);
+
+                        $.each(json, function(i, varObj) {
+                          if (varObj.name == name)
+                          {
+                            console.log("getJson");
+                            var categories = [];
+                            var pointRatio = $("#pointRatio").html();
+
+                            console.log('Looking for SeriesName: ' + name);
+                            var series = {data: []}
+                            var pCounter = 0;
+
+
+                            var objValue = varObj.value;
+
+                            $.each(time, function(j, obj2) {
+                              var arr = new Array();
+                              if (pCounter % pointRatio == 0)
+                              {
+                                series.data.push(objValue);
+                                var timeAdj = time[j] * 100;
+                                var timeArray = String(timeAdj).split('.');
+                                categories.push(timeArray[0]);
+                              }
+                              pCounter++;
+                            });
+
+                            series.name = seriesShortName;
+                            self.chart().xAxis[0].setCategories(categories);
+                            self.chart().addSeries(series);
+                            console.log("Series Added to Chart object");
+                            self.chart().redraw();
+
+                            return false;
+                          }
+                        });
+                      });
+                    }
+                    return false;
+                  });
+
+                  return false;
+                }
+              });
+            });
+          };
+
+          self.initializeChart = function() {
+            var chartTitle = 'TestBench' + self.plot().testbench_name() + ' / Configuration: ' + self.plot().config_name() + ' / Plot Version #' + self.plot().plot_version();
+            var options = {
+              chart: {
+                renderTo: 'container',
+                zoomType: 'x',
+                resetZoomButton: {
+                  position: {x: 50, y: -30}},
+                type: 'line',
+                marginRight: 130,
+                marginBottom: 75,
+                events: {
+                  selection: function(event) {
+                    if (event.xAxis != null)
+                    {
+                      var preMin = self.chart().xAxis[0].min;
+                      var preMax = self.chart().xAxis[0].max;
+                      var postMin = event.xAxis[0].min;
+                      var postMax = event.xAxis[0].max;
+                      console.log(self.chart().xAxis[0].min);
+                      console.log(self.chart().xAxis[0].max);
+                      console.log(event.xAxis[0].min);
+                      console.log(event.xAxis[0].max);
+                      var maxes = Math.abs(postMax - preMax);
+                      var mins = Math.abs(postMin - preMin);
+                      console.log(maxes);
+                      console.log(mins);
+                      var diff = maxes / (mins);
+                      console.log("Diff:" + diff);
+                      console.log("Chart Interval Pre: " + self.chart().xAxis[0].tickInterval);
+                      self.chart().xAxis[0].tickInterval = self.chart().xAxis[0].tickInterval / diff;
+                      self.chart().redraw();
+                      console.log("Chart Interval Post: " + self.chart().xAxis[0].tickInterval);
+                      console.log(Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', event.xAxis[0].min),
+                              Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', event.xAxis[0].max));
+                      console.log(event.yAxis[0].min, event.yAxis[0].max);
+                      $("#extremeLow").html(postMin);
+                      $("#extremeHigh").html(postMax);
+                      $("#zoomSend").trigger('click');
+                    }
+                    else
+                    {
+                      console.log("reset?");
+                      $("#extremeLow").html('0');
+                      $("#extremeHigh").html('500');
+                      $("#zoomSend").trigger('click');
+                    }
+                  }
+                }
+              },
+              xAxis: {
+                title: {text: 'Seconds', margin: 15},
+                tickInterval: 7,
+                labels:
+                        {
+                          rotation: -90,
+                          align: 'right',
+                          style: {fontSize: '10px', fontFamily: 'Helvetica, sans-serif'},
+                          formatter: function() {
+                            var milli = this.value;
+                            var secs = milli;
+                            return secs;
+                          }
+                        }
+              },
+              title: {text: chartTitle, x: -20},
+              yAxis: {
+                title: {text: 'Value'},
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                  }]
+              },
+              tooltip: {
+                formatter: function() {
+
+                  var milli = this.x;
+                  var secs = milli;
+
+                  return '<b>' + this.series.name + '</b><br/>' +
+                          secs + ' secs | ' + this.y + 'units';
+                },
+                crosshairs: true
+              },
+              plotOptions: {
+                series: {
+                  marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 3,
+                    states: {hover: {enabled: true}}
+                  }
+                }
+              },
+              legend: {
+                enabled: false,
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+              },
+              exporting: {
+                filename: 'something',
+                buttons: {
+                  exportButton: {
+                    menuItems: [
+                      {
+                        textKey: 'downloadPNG',
+                        onclick: function() {
+                          this.exportChart();
+                        }
+                      }, {
+                        textKey: 'downloadJPEG',
+                        onclick: function() {
+                          this.exportChart({
+                            type: 'image/jpeg'
+                          });
+                        }
+                      }, {
+                        textKey: 'downloadPDF',
+                        onclick: function() {
+                          this.exportChart({
+                            type: 'application/pdf'
+                          });
+                        }
+                      }, {
+                        textKey: 'downloadSVG',
+                        onclick: function() {
+                          this.exportChart({
+                            type: 'image/svg+xml'
+                          });
+                        }
+                      }, {
+                        text: 'Download CSV document',
+                        onclick: function() {
+                          $.post("simviz_rest/csvExportPlotSeriesWithVariablesColumns/" + self.plot().plot_id(), {}, function(result) {
+                            var json = $.parseJSON(result);
+                            console.log(json);
+
+                            self.varDownloadLink(json.var_link);
+                            self.paramDownloadLink(json.param_link);
+                            self.csvExportReady(true);
+                          });
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              series: {data: []}
+            };
+
+            self.chart(new Highcharts.Chart(options));
+          };
+          self.initChartSettings = function() {
+            var settings = self.plot().plot_settings();
+            console.log(settings.series);
+            var mappedSettingsVars = $.map(settings.series, function(item) {
+              return new Variable(item)
+            });
+
+            //            $.each(mappedSettingsVars, function(i, obj) {
+            //              self.varBoxClick(obj);
+            //              //self.clickYAxisVariable(obj);
+            //            });
+
+
+            //        $("#plotSettings").html(settings);
+            //        var setName = settings.series.name;
+            //        var finName = setName.split(".").join("__");
+            //        doChartYDraw('<?php echo base_url(); ?>include/'+settings.series.data_link, finName);
+            //        $('#y'+finName).prop("checked", true);
+            //        chart.redraw();
+            //        $('#x'+finName).prop("checked", true);
+            //        chart.showResetZoom();
+          };
+          self.doChartXDraw = function(jsonFilePath, name) {
+            name = name.split("__").join(".");
+            $.getJSON(jsonFilePath, function(json) {
+              var categories = [];
+              $.each(json.variables, function(i, obj) {
+                if (obj.name == name)
+                {
+                  var series = {data: []}
+                  var pCounter = 0;
+                  $.each(obj.data, function(j, obj2) {
+                    if (pCounter % 25 == 0)
+                      categories.push(obj2);
+                    pCounter++;
+                  });
+                  chart.xAxis[0].setCategories(categories);
+                }
+              });
+            });
+          };
+          self.findClick = function() {
+            $("#barLoader").show();
+            var search = $.trim($("#variableSerach").val());
+
+            var post_data = {
+              search: search
+            };
+
+            $.post('/simviz_rest/getSearchResults/' + self.plot().plot_id(), post_data, function(result) {
+
+              //var json = $.parseJSON(result);
+              var json = result;
+              console.log(json);
+
+              var mappedVars = $.map(json.vars, function(item) {
+                return new Variable(item);
+              });
+              self.searchVariables(mappedVars);
+
+              //$("#searchResults").html(result);
+              $("#barLoader").hide();
+            });
+          };
+
+          self.varBoxClick = function(clckVar) {
+            self.searchVariables.remove(clckVar);
+            self.variables.push(clckVar);
+
+            var found = false;
+
+            ko.utils.arrayForEach(self.plot().plot_settings().series, function(item) {
+              console.log(item);
+              console.log(item.variable_id + ' - ' + clckVar.variable_id());
+              if (item.variable_id == clckVar.variable_id()) {
+                found = true;
+              }
+            });
+
+            if (!found)
+            {
+              //Add variable to plot settings json
+              var name = clckVar.name();
+              var seriesShortName = clckVar.name();
+              var id = clckVar.variable_id();
+
+              var post_data = {
+                plotID: self.plot().plot_id(),
+                name: name,
+                id: id,
+                data_link: clckVar.data_link(),
+                type: clckVar.type()
+              };
+
+              $.post("simviz_rest/updatePlotSettings/", post_data, function(result)
+              {
+                var json = $.parseJSON(result);
+                console.log(json);
+              });
+            }
+
+            //        $(this).css('background-color', '#ccc');
+            //        var newCheckBox = "";
+            //        newCheckBox += '<li>';
+            //        newCheckBox += '<input type="checkbox" name="elements[]" id="y'+id+'" seriesName="'+name+'" seriesShortName="'+shortname+'" value="'+datalink+'" class="yaxisvar" />';
+            //        newCheckBox += '<label for="y'+id+'" class="eltLabel">'+shortname+'</label>';
+            //        newCheckBox += '</li>';
+            //        $("#yaxislist").append(newCheckBox);
+          };
+          self.initVariableDialog = function() {
+            //Global Variables
+            var plotSettings = {};
+            $("#plotSettings").html('' + plotSettings);
+
+            //Add variable / Variable Search Functions
+            //            $('#AddVariableDialog').dialog({
+            //              autoOpen: false,
+            //              width: 1000,
+            //              height: 600,
+            //              buttons: {
+            //                "Close": function() {
+            //                  $(this).dialog("close");
+            //                }
+            //              }
+            //            });
+
+            //            $('#AddVariableDialog_open').live("click", function() {
+            //              $('#AddVariableDialog').dialog('open');
+            //              return false;
+            //            });
+            //
+            //            $('#ClearVariable').live("click", function() {
+            //              for (var i = 0; i < series.length; i++)
+            //              {
+            //                console.log("series name: " + series[i].name);
+            //                chart.series[i].remove(true);
+            //              }
+            //            });
+          };
+          self.clickXAxisVariable = function(xvar) {
+            var data_link = $(this).val();
+            console.log(data_link);
+            var name = $(this).attr("id");
+            name = name.substring(1);
+            console.log(name);
+            if ($(this).is(':checked'))
+            {
+              var categories = [];
+              chart.xAxis[0].setCategories(categories);
+              doChartXDraw(data_link, name);
+              chart.redraw();
+            }
+          };
+          self.clickYAxisVariable = function(yvar) {
+
+            var settings = self.plot().plot_settings();
+            var name = yvar.name;
+            var seriesShortName = yvar.name;
+            var id = yvar.variable_id();
+
+            console.log(id);
+            console.log("#y" + id);
+
+            if (!$("#y" + id).is(':checked'))
+            {
+//                $("#y" + id).attr('checked', '');
+//                console.log("attempt remove");
+//
+//                var series = self.chart().series;
+//                console.log(series);
+//                for (var i = 0; i < series.length; i++)
+//                {
+//                  console.log("series name: " + series[i].name);
+//                  console.log("seriesShortName: " + seriesShortName());
+//                  if (series[i].name == seriesShortName())
+//                  {
+//                    console.log("remove series");
+//                    self.chart().series[i].remove(true);
+//                    break;
+//                  }
+//                }
+
+              //Remove variable from plot settings json
+            }
+            else
+            {
+              $("#y" + id).attr('checked', 'checked');
+              console.log("checked!");
+
+              self.doD3ChartYDraw(yvar);
+            }
+
+            return true;
+          };
+
+          self.refreshAfterTabClick = function() {
+            console.log('refresh');
+            //HACK!!! Shouldn't have to trigger a window resize for the layout to reset. Weird bug in isotope?
+            $(window).trigger('resize');
+            self.chart().update();
+          };
+          self.refreshStaticChart1 = function() {
+            self.initStaticPlot();
+          };
+          self.refreshMSD1 = function() {
+            self.initPlot(37);
+          };
+          self.refreshMSD2 = function() {
+            self.initPlot(37);
+          };
+
+
+
+
+
+          //Init Calls
+
+          self.initPlotID = ko.observable();
+
+          var pID = $.QueryString("plotID");
+          console.log(pID);
+          if (pID != "" && pID != null)
+          {
+            self.initPlotID(pID);
+          }
+
+
+
+          self.initPlot(self.initPlotID());
+          self.initVariableDialog();
+        }
+
+        var plotViewModel = new PlotViewModel();
+        ko.applyBindings(plotViewModel);
+
+
+        //DataTable Init
+        var vTable = $('.vTable').dataTable({
+          "bJQueryUI": false,
+          "bAutoWidth": false,
+          "sDom": '<"H"fl>t<"F"ip>'
+        });
+        vTable.fnSort([[1, 'desc']]);
+        $('#dyna .tOptions').click(function() {
+          $('#dyna .tablePars').slideToggle(200);
+        });
+        $('.tOptions').click(function() {
+          $(this).toggleClass("act");
+        });
+        $('#zoomSend').click(function() {
+
+          console.log("high" + $('#extremeHigh').html());
+          console.log("high" + $('#extremeHigh').val());
+          console.log("high" + $('#extremeHigh').text());
+
+          var message = '{ "low" : ' + $('#extremeLow').html() + ', "high" : ' + $('#extremeHigh').html() + '}';
+        });
+        //        $(".uSlider").slider({
+        //          range: "min",
+        //          value: 25,
+        //          min: 1,
+        //          max: 100,
+        //          slide: function(event, ui) {
+        //            //$( "#minRangeAmount" ).val( "$" + ui.value );
+        //          }
+        //        });
+      });
+      </script>
+
+      <script>
+        //      nv.addGraph(function() {
+        //        var chart = nv.models.lineChart();
+        //        chart.xAxis
+        //                .axisLabel('Time (ms)')
+        //                .tickFormat(d3.format(',r'));
+        //
+        //        chart.yAxis
+        //                .axisLabel('Voltage (v)')
+        //                .tickFormat(d3.format('.02f'));
+        //
+        //        d3.select('#chart svg')
+        //                .datum(sinAndCos())
+        //                .transition().duration(500)
+        //                .call(chart);
+        //
+        //        nv.utils.windowResize(function() {
+        //          d3.select('#chart svg').call(chart);
+        //        });
+        //
+        //        return chart;
+        //      });
+
+
+
+
+        /**************************************
+         * Simple test data generator
+         */
+
+
+        function sinAndCos() {
+          var sin = [], cos = [];
+
+          for (var i = 0; i < 100; i++) {
+            sin.push({x: i, y: Math.sin(i / 10)});
+            cos.push({x: i, y: .5 * Math.cos(i / 10)});
+          }
+
+          return [
+            {
+              values: sin,
+              key: 'Sine Wave',
+              color: '#ff7f0e'
+            },
+            {
+              values: cos,
+              key: 'Cosine Wave',
+              color: '#2ca02c'
+            }
+          ];
+        }
+
+        //  nv.addGraph(function() {
+        //     var chart = nv.models.indentedTree()
+        //       .tableClass('table table-striped') //for bootstrap styling
+        //       .columns([
+        //         {
+        //           key: 'name',
+        //           label: 'Name',
+        //           showCount: true,
+        //           width: '75%',
+        //           type: 'text',
+        //           classes: function(d) { return d.url ? 'clickable name' : 'name' },
+        //           click: function(d) {
+        //              if (d.url) window.location.href = d.url;
+        //           }
+        //         },
+        //         {
+        //           key: 'full_name',
+        //           label: 'full_name',
+        //           width: '25%',
+        //           type: 'text'
+        //         }
+        //       ]);
+
+
+        //   d3.select('#chart')
+        //       .datum(testData())
+        //     .call(chart);
+
+        //   return chart;
+        // });
+
+        //      function testData() {
+        //
+        //        $.getJSON('/simviz_rest/jsondata', function(result) {
+        //          //var json = $.parseJSON(result);
+        //          console.log(result);
+        //          return json;
+        //        });
+        //
+        //      }
+        //
+        //      testData();
+
+
+      </script>
+
+    </div>
+  </body>
+</html>

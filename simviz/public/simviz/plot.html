@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SimViz 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="css/blue.css" id="link_theme" />
+    <link rel="stylesheet" href="lib/jBreadcrumbs/css/BreadCrumb.css" />
+    <link rel="stylesheet" href="lib/qtip2/jquery.qtip.min.css" />
+    <link rel="stylesheet" href="lib/colorbox/colorbox.css" />    
+    <link rel="stylesheet" href="lib/google-code-prettify/prettify.css" />    
+    <link rel="stylesheet" href="lib/sticky/sticky.css" />    
+    <link rel="stylesheet" href="images/splashy/splashy.css" />
+    <link rel="stylesheet" href="images/flags/flags.css" />	
+    <link rel="stylesheet" href="lib/fullcalendar/fullcalendar_gebo.css" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans" />
+    <style>
+      body {
+        /*padding-top: 60px;  60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="css/nv.d3.css" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="../favicon.png">
+
+    <style>
+
+      body {
+        overflow-y:scroll;
+      }
+
+      text {
+        font: 12px sans-serif;
+      }
+
+      svg {
+        display: block;
+      }
+
+      #chart1 svg {
+        height: 500px;
+        min-width: 100px;
+        min-height: 100px;
+        /*
+          margin: 50px;
+          Minimum height and width is a good idea to prevent negative SVG dimensions...
+          For example width should be =< margin.left + margin.right + 1,
+          of course 1 pixel for the entire chart would not be very useful, BUT should not have errors
+        */
+      }
+
+    </style>
+  </head>
+
+  <body class="sidebar_hidden">
+
+    <div class="style_switcher">
+      <div class="sepH_c">
+        <p>Colors:</p>
+        <div class="clearfix">
+          <a href="javascript:void(0)" class="style_item jQclr blue_theme style_active" title="blue">blue</a>
+          <a href="javascript:void(0)" class="style_item jQclr dark_theme" title="dark">dark</a>
+          <a href="javascript:void(0)" class="style_item jQclr green_theme" title="green">green</a>
+          <a href="javascript:void(0)" class="style_item jQclr brown_theme" title="brown">brown</a>
+          <a href="javascript:void(0)" class="style_item jQclr eastern_blue_theme" title="eastern_blue">eastern blue</a>
+          <a href="javascript:void(0)" class="style_item jQclr tamarillo_theme" title="tamarillo">tamarillo</a>
+        </div>
+      </div>
+      <div class="sepH_c">
+        <p>Backgrounds:</p>
+        <div class="clearfix">
+          <span class="style_item jQptrn style_active ptrn_def" title=""></span>
+          <span class="ssw_ptrn_a style_item jQptrn" title="ptrn_a"></span>
+          <span class="ssw_ptrn_b style_item jQptrn" title="ptrn_b"></span>
+          <span class="ssw_ptrn_c style_item jQptrn" title="ptrn_c"></span>
+          <span class="ssw_ptrn_d style_item jQptrn" title="ptrn_d"></span>
+          <span class="ssw_ptrn_e style_item jQptrn" title="ptrn_e"></span>
+        </div>
+      </div>
+      <div class="sepH_c">
+        <p>Layout:</p>
+        <div class="clearfix">
+          <label class="radio inline"><input type="radio" name="ssw_layout" id="ssw_layout_fluid" value="" checked /> Fluid</label>
+          <label class="radio inline"><input type="radio" name="ssw_layout" id="ssw_layout_fixed" value="gebo-fixed" /> Fixed</label>
+        </div>
+      </div>
+      <div class="sepH_c">
+        <p>Sidebar position:</p>
+        <div class="clearfix">
+          <label class="radio inline"><input type="radio" name="ssw_sidebar" id="ssw_sidebar_left" value="" checked /> Left</label>
+          <label class="radio inline"><input type="radio" name="ssw_sidebar" id="ssw_sidebar_right" value="sidebar_right" /> Right</label>
+        </div>
+      </div>
+      <div class="sepH_c">
+        <p>Show top menu on:</p>
+        <div class="clearfix">
+          <label class="radio inline"><input type="radio" name="ssw_menu" id="ssw_menu_click" value="" checked /> Click</label>
+          <label class="radio inline"><input type="radio" name="ssw_menu" id="ssw_menu_hover" value="menu_hover" /> Hover</label>
+        </div>
+      </div>
+
+      <div class="gh_button-group">
+        <a href="#" id="showCss" class="btn btn-primary btn-mini">Show CSS</a>
+        <a href="#" id="resetDefault" class="btn btn-mini">Reset</a>
+      </div>
+      <div class="hide">
+        <ul id="ssw_styles">
+          <li class="small ssw_mbColor sepH_a" style="display:none">body {<span class="ssw_mColor sepH_a" style="display:none"> color: #<span></span>;</span> <span class="ssw_bColor" style="display:none">background-color: #<span></span> </span>}</li>
+          <li class="small ssw_lColor sepH_a" style="display:none">a { color: #<span></span> }</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="maincontainer" class="clearfix">
+      <!-- header -->
+      <header>
+        <div class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container-fluid">
+              <a class="brand" href="dashboard.html"><i class="icon-home icon-white"></i> SimViz 2</a>
+<!--              <ul class="nav user_menu pull-right">
+                <li class="hidden-phone hidden-tablet"></li>
+                <li class="divider-vertical hidden-phone hidden-tablet"></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="user_profile.html">My Plots</a></li>
+                    <li><a href="javascrip:void(0)">Another action</a></li>
+                    <li class="divider"></li>
+                    <li><a href="login.html">Log Out</a></li>
+                  </ul>
+                </li>
+              </ul>-->
+              <a data-target=".nav-collapse" data-toggle="collapse" class="btn_menu">
+                <span class="icon-align-justify icon-white"></span>
+              </a>
+              <nav>
+
+
+                <div class="nav-collapse">
+                  <ul class="nav">
+                    <li>
+                      <a href="dashboard.html"><i class="splashy-application_windows"></i> Dashboard</a>
+                    </li>
+                    <li>
+                      <a href="dashboard.html?page=upload"><i class="splashy-arrow_large_up"></i> Upload New Sim</a>
+                    </li>
+                    <li><a href="dashboard.html?page=tb">Test Benches</a></li>
+                    <li><a href="dashboard.html?page=conf">Configurations</a></li>
+                    <li><a href="dashboard.html?page=sim">Simulations</a></li>
+<!--                    <li class="dropdown">
+                      <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-list-alt icon-white"></i>Sample Pages <b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="dashboard.html?page=sim&tbID=31&confID=34">Sample Simulation List</a></li>
+                        <li><a href="plot.html?plotID=37">Sample Plot Page</a></li>
+                      </ul>
+                    </li>-->
+
+                  </ul>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+      </header>
+
+      <!-- main content -->
+      <div id="contentwrapper">
+        <div class="main_content">
+          <!-- ko if: plot() != undefined -->
+          <h1 class="heading"><span data-bind="text: plot().plotSettings().name"></span></h1>
+          <!-- /ko -->
+          <div id="chart" style="">
+            <svg style="height: 500px;"></svg>
+          </div>
+          <div class="" id="dt1" style="">
+            <div class="row-fluid">
+              <div class="span12">
+
+
+                <!-- ko if: csvExportReady()  -->
+                <h4 style="margin-top:10px; margin-bottom: 7px;">Your Export is Ready</h4>
+                <a class="btn btn-success" data-bind="attr:{href: varDownloadLink}">Vars Export</a>
+                <a class="btn btn-warning" data-bind="attr:{href: paramDownloadLink}">Param Export</a>
+                <!-- /ko -->
+
+                <div id="extremeLow" style="display:none;">0</div>
+                <div id="extremeHigh" style="display:none;">1000</div>
+                <button id="zoomSend" style="display:none;"></button>
+              </div>
+            </div>
+
+            <div class="row-fluid">
+              <div class="span8">
+                <h3>Graph Series</h3>
+                <a class="btn btn-success" id="openAddVariableDialog" href="#AddVariableDialog" data-toggle="modal" data-backdrop="false">Add Variables</a>
+                <a class="btn btn-danger" id="ClearVariable" href="#_" >Clear Variables</a>
+                <div class="" style="margin: 25px 0 0 0;">
+                  <form action="">
+                    <ul id="yaxislist" class="unstyled" data-bind="foreach: variables">
+                      <!--          <li>Add Some Variables to Begin</li>-->
+                      <li>
+                        <label data-bind="attr: {for: 'y'+variable_id()}" class="checkbox">
+                          <input type="checkbox" data-bind="click: $parent.clickYAxisVariable, attr: { id: 'y'+variable_id() }" />
+                          <span data-bind=" text: name"></span>
+                        </label>
+                      </li>
+                    </ul>
+                  </form>
+                </div>
+                <div class="" style="display: none;">
+                  <div class="whead"><h6>X-Axis</h6></div>
+                  <div class="body">
+                    <ul>
+                      <li>
+                        <input type="radio" name="xaxisoption" id="xTime" value="" class="xaxisvar" checked />
+                        <label for="xTime" class="eltLabel">Time</label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="span4" style="">
+                
+                <h3>Plotted Simulations</h3>
+                <div class="" style="margin: 25px 0 0 0;">
+                  <form action="">
+                    <ul id="yaxislist" class="unstyled" data-bind="foreach: simItems">
+                      <!-- ko if: $root.mainSim() -->
+                      <!-- ko if: simID() == $root.mainSim().simID() -->
+                      
+                      <li style='margin: 0 0 10px 0;'>
+                        <label data-bind="attr: {for: 'sim'+simID()}" class="checkbox">
+                          <span data-bind="text: simName, attr: { id: 'sim'+simID() }"></span> (Main Sim)
+                        </label>
+                      </li>
+                      
+                      <!-- /ko -->
+                      <!-- ko if: simID() != $root.mainSim().simID() -->
+                      <li>
+                        <label data-bind="attr: {for: 'sim'+simID()}" class="checkbox">
+                          <span data-bind="text: simName, click: $parent.clickRemoveSimFromPlot, attr: { id: 'sim'+simID() }"></span>
+                        </label>
+                      </li>
+                      <!-- /ko -->
+                      <!-- /ko -->
+                    </ul>
+                  </form>
+                </div>
+                
+                <h3>Simulations with same TestBench</h3>
+                <div>(Click to add to plot)</div>
+                <div class="" style="margin: 25px 0 0 0;">
+                  <form action="">
+                    <ul id="yaxislist" class="unstyled" data-bind="foreach: simTBItems">
+                      <li>
+                        <label data-bind="attr: {for: 'sim'+simID()}" class="checkbox">
+                          <span data-bind="text: simName, click: $parent.clickAddSimToPlot, attr: { id: 'sim'+simID() }"></span>
+                        </label>
+                      </li>
+                    </ul>
+                  </form>
+                </div>
+              </div>
+
+              <!--Data-->
+              <div id="pointRatio" style="display:none;">25</div>
+              <div id="treeSelectedDataLink" style="display:inline;"></div>
+              <div id="treeSelectedName" style="display:inline;"></div>
+
+            </div>
+          </div>
+
+          <div class="modal hide fade" id="AddVariableDialog">
+            <div class="modal-header">
+              <button class="close" data-dismiss="modal">×</button>
+              <h3>Search for and Add Variables</h3>
+            </div>
+            <div class="modal-body">
+              <div class="row-fluid">
+                <div class="span12">
+                  <div class="searchLine" style="margin-top:0px;">
+                    <form action="">
+                      <button type="submit" name="find" id="find" value="" data-bind="click: findClick"><span class="icos-search"></span></button>
+                      <input type="text" name="search" id="variableSerach" class="" placeholder="Enter search text..." />
+                    </form>
+                  </div>
+                  <img id="barLoader" src="img/bar_loader.gif" style="display:none;"/>
+                  <div id="searchResults" style="margin: 3px 0px 3px 3px;" class="scrollpane" data-bind="foreach: searchVariables">
+
+                    <div class="row-fluid varbox" style="margin:5px 5px 5px 0px; padding:0 0px 0 5px; border-bottom:1px #ccc solid;" 
+                         data-bind="attr: { id: variable_id, name: name, shortname: short_name, data_link: data_link, var_type: type }, click: $parent.varBoxClick" >
+                      <div class="span12" style="font-size: 11px;" data-bind="text: name"><div class="clear"></div></div></div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a href="javascript:void(0)" class="btn">Done</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Le javascript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <!--        <script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>-->
+      <script type="text/javascript" src="js/jquery.min.js"></script>
+      <script type="text/javascript" src="js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="js/d3.v2.js"></script>
+      <script type="text/javascript" src="js/nv.d3.min.js"></script>
+      <script type="text/javascript" src="js/highcharts.js"></script>
+      <script type="text/javascript" src="js/modules/exporting.src.js"></script>
+      <script type="text/javascript" src="js/knockout-2.1.0.js"></script>
+      <script type="text/javascript" src="js/knockout-classes.js"></script>
+      <script type="text/javascript" src="js/jquery.datatables.min.js"></script>
+      <script type="text/javascript" src="lib/querystring/source/querystring-0.9.0-min.js"></script>
+
+
+      <!-- smart resize event -->
+      <script src="js/jquery.debouncedresize.min.js"></script>
+      <!-- hidden elements width/height -->
+      <script src="js/jquery.actual.min.js"></script>
+      <!-- js cookie plugin -->
+      <script src="js/jquery.cookie.min.js"></script>
+      <!-- tooltips -->
+      <script src="lib/qtip2/jquery.qtip.min.js"></script>
+      <!-- jBreadcrumbs -->
+      <script src="lib/jBreadcrumbs/js/jquery.jBreadCrumb.1.1.min.js"></script>
+      <!-- lightbox -->
+      <script src="lib/colorbox/jquery.colorbox.min.js"></script>
+      <!-- fix for ios orientation change -->
+      <script src="js/ios-orientationchange-fix.js"></script>
+      <!-- scrollbar -->
+      <script src="lib/antiscroll/antiscroll.js"></script>
+      <script src="lib/antiscroll/jquery-mousewheel.js"></script>
+      <!-- to top -->
+      <script src="lib/UItoTop/jquery.ui.totop.min.js"></script>
+      <!-- common functions -->
+      <script src="js/gebo_common.js"></script>
+
+      <script src="lib/jquery-ui/jquery-ui-1.8.20.custom.min.js"></script>
+      <!-- touch events for jquery ui-->
+      <script src="js/forms/jquery.ui.touch-punch.min.js"></script>
+      <!-- multi-column layout -->
+      <script src="js/jquery.imagesloaded.min.js"></script>
+      <script src="js/jquery.wookmark.js"></script>
+      <!-- responsive table -->
+      <script src="js/jquery.mediaTable.min.js"></script>
+      <!-- small charts -->
+      <script src="js/jquery.peity.min.js"></script>
+      <!-- charts -->
+      <script src="lib/flot/jquery.flot.min.js"></script>
+      <script src="lib/flot/jquery.flot.resize.min.js"></script>
+      <script src="lib/flot/jquery.flot.pie.min.js"></script>
+      <!-- calendar -->
+      <!--<script src="lib/fullcalendar/fullcalendar.min.js"></script>-->
+      <!-- sortable/filterable list -->
+      <script src="lib/list_js/list.min.js"></script>
+      <script src="lib/list_js/plugins/paging/list.paging.min.js"></script>
+
+      <!-- plot functions -->
+      <script src="js/production/plot.js"></script>
+    </div>
+  </body>
+</html>
